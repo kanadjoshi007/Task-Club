@@ -1,0 +1,10 @@
+please create tables from your side from given attachment, 
+requirements are as below
+
+Tasks to do
+
+choose any UI template based on bootstrap 5
+Create Club creation form with JavaScript/JQuery validation
+store the club details as per table schema and description into table
+Create Product creation form with JavaScript/JQuery validation
+store the product details as per table schema and description into table
