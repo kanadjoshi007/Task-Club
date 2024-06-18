@@ -24,7 +24,9 @@ class ProductController extends Controller
     public function create(Request $request)
     {
 
-        $product = Products::all();
+        $product = Products::with('clubs')->get();
+
+        
 
         return response()->json($product);
     }
@@ -61,9 +63,8 @@ class ProductController extends Controller
 
         $request->validate([
 
-            'attr' => 'required',
+            'attr' => 'required|not_in:0',
             'title' => 'required|max:255',
-            'Ptitle' => 'required|max:255',
             'type' => 'required|max:100',
         ]);
 
@@ -135,7 +136,7 @@ class ProductController extends Controller
 
         $request->validate([
 
-            'attr' => 'required',
+            'attr' => 'required|not_in:0',
             'title' => 'required|max:255',
             'type' => 'required|max:100',
         ]);

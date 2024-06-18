@@ -13,4 +13,10 @@ class Products extends Model
 
     protected $fillable = ['id','club_id','title','product_title','type'];
 
+    public function clubs(){
+
+        return $this->belongsTo(Club::class,'club_id','id');
+
+    }
+
 }

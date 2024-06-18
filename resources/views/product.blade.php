@@ -12,12 +12,15 @@
 </head>
 
 <style>
-   
+    span {
+        color: red;
+    }
 
-       span{
-            color:red;
-        }
-    </style>
+    .table td,
+    .table th {
+        text-align: center;
+    }
+</style>
 </style>
 
 <body>
@@ -43,7 +46,7 @@
                     </th>
 
                     <th>
-                        club Id
+                        club Id 
                     </th>
                     <th>
 
@@ -126,8 +129,7 @@
                         <label for="clubs">Club <span>*</span></label>
                         <div class="mb-3">
                             <select name="attr" id="club" style="width: 200px; height:40px; font-size:18px">
-                                <option value="0" for='default' id="default"> Select Club</option>
-
+                                
                             </select>
                         </div>
                         <br>
@@ -152,53 +154,83 @@
 
 
 
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
     </script>
 
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
-        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/jquery.validate.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
     <script>
         $(document).ready(function() {
 
 
+            let text;
+
             function fetchClub() {
 
-                $.get('fetchClub', function(response) {
+                $.get('/fetchClub', function(response) {
 
+                    // console.log('response : ',response.length);
+                    // if (response.length == 0) {
+                    //     $('#club').append(
+
+                    //         `<option >No Club</option>`
+                    //     );
+                    // }
+                        
                     $('#club').empty();
-                    $('#club').append('<option value=0> Select Club</option>')
+                        $.each(response, function(key, value) {
+                            
+                            $('#club').append(
 
-                    $.each(response, function(key, value) {
+                                `<option value="0" for='default' id="default"> Select Club</option>`
+                            )
 
-                        $('#club').append(
-                            `
-                                <option value=${value.id}> ${value.club_name}</option>
-                            `
-                        );
-                    });
+                            $('#club').append(
+                                
+                                `<option value=${value.id}>${value.club_name}</option>`
+                            );
+                        });
+
                 });
 
             }
 
+            fetch();
 
-            $.ajax({
+            function fetch() {
 
-                url: '/product/create',
-                method: 'GET',
-                success: function(response) {
 
-                    console.log(response);
+                $.ajax({
 
-                    $.each(response, function(key, value) {
+                    url: '/product/create',
+                    method: 'GET',
+                    success: function(response) {
 
-                        $('tbody').append(
-                            `<tr>
+                        $('tbody').html("");
+                        console.log(response);
+
+                        if (response.length == 0) {
+                            console.log('yes');
+
+                            $('tbody').append(
+
+                                `<td colspan=7>Data Not Found</td>`
+
+                            );
+                        } else {
+
+
+                            $.each(response, function(key, value) {
+
+                                $('tbody').append(
+                                    `<tr>
                                 <td>${value.id}</td>
-                                <td>${value.club_id}</td>
+                                <td>${value.club_id}-${value.clubs.club_name}</td>
                                 <td>${value.title}</td>
                                 <td>${value.product_title}</td>
                                 <td>${value.type}</td>
@@ -207,21 +239,22 @@
                         
                                 </tr>
                                 `
-                        );
-                    })
-                },
-                error: function(response) {
+                                );
+                            })
+                        }
+                    },
+                    error: function(response) {
 
-                    console.log(response);
-                    $.each(response.responseJSON.errors, function(key, value) {
-                        $('#error').append(value + '<br>');
-                    });
-
-
-                },
-            });
+                        console.log(response);
+                        $.each(response.responseJSON.errors, function(key, value) {
+                            $('#error').append(value + '<br>');
+                        });
 
 
+                    },
+                });
+
+            }
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -230,22 +263,18 @@
 
             $('body').on('click', '#submitBtn', function(event) {
 
+                text= "Product Added Successfully";
 
+                $('#method').val('POST');
                 $('#submitProduct').trigger('reset');
+                $('#error').empty();
                 $('#exampleModal').modal('show');
 
                 $('#club').empty();
 
-
-
                 url = $(this).data('action');
 
                 type = $(this).data('type');
-
-
-                // $('#club').append(
-                //     `<option > Select Club</option>`
-                // );
 
 
                 $.get('/fetchId', function(response) {
@@ -270,7 +299,14 @@
 
                 }
 
-                console.log(type);
+                if (type == 'PUT') {
+                    text = "Product Edited Successfully";
+                } else {
+
+                    text = "Product Added Successfully";
+
+                }
+
 
                 formData = new FormData(this);
 
@@ -285,7 +321,17 @@
                     processData: false,
                     success: function(response) {
 
-                        location.reload();
+                        Swal.fire({
+                            position: "center",
+                            icon: "success",
+                            title: text,
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+
+                        fetch();
+
+                        $('#exampleModal').modal('hide');
 
                     },
                     error: function(response) {
@@ -304,48 +350,23 @@
             $('body').on('click', '#editBtn', function(event) {
 
 
+                text = "Product Edited Successfully";
+
                 var p_id = $(this).data('id');
 
                 url = $(this).data('action');
 
                 type = $(this).data('type');
 
+                $('#submitProduct').trigger('reset');
+                $('#error').empty();
                 $('#exampleModal').modal('show');
 
                 $('#method').val('PUT');
 
-                $.get('/fetchClub', function(response) {
-                    
-                    // console.log('response : ',response.length);
-                    if(response.length == 0)
-                    {
-                        $('#club').append(
-
-                            `<option >No Club</option>`
-
-                            );
-
-                        
-
-                    }
-
-                    $.each(response, function(key, value) {
-
-                        $('#club').append(
-
-                            `<option value=${value.id}>${value.club_name}</option>`
-
-                        );
-
-                    });
-                    console.log($('#club'));
-
-                });
-
+                fetchClub();
 
                 $.get('product/' + p_id + '/edit', function(data) {
-
-
 
                     $('#exampleModal').modal('show');
                     $('#id').val(data.id);
@@ -355,31 +376,51 @@
                     $('#type').val(data.type);
                 });
 
-
-
             });
-
 
 
             $('body').on('click', '#deleteBtn', function(event) {
 
                 var post_id = $(this).data("id");
 
-                $.ajax({
-                    type: "DELETE",
-                    url: "{{ url('product') }}" + '/' + post_id,
-                    success: function(data) {
+                Swal.fire({
+                    title: "Are you sure?",
+                    text: "You won't be able to revert this!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Yes, delete it!"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        Swal.fire({
+                            position: "center",
+                            icon: "success",
+                            title: "Product Deleted Successfully",
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
 
-                        location.reload();
+                        $.ajax({
+                            type: "DELETE",
+                            url: "{{ url('product') }}" + '/' + post_id,
+                            success: function(data) {
+
+                                fetch();
+
+                            },
+                            error: function(data) {
+                                console.log('Error:', data);
+                            }
 
 
-                    },
-                    error: function(data) {
-                        console.log('Error:', data);
+
+                        });
+
                     }
-
-
                 });
+
+
             });
         });
     </script>

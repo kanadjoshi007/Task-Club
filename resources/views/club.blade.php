@@ -15,8 +15,16 @@
             width: 750px;
             margin: auto;
         }
-        .error{
+
+        .error {
             color: red;
+            
+        }
+        
+
+        .table td,
+        .table th {
+            text-align: center;
         }
     </style>
 </head>
@@ -220,7 +228,7 @@
                                 data-bs-dismiss="modal">Close</button>
 
 
-                            <button type="submit" id='submit1' name="submit" 
+                            <button type="submit" id='submit1' name="submit"
                                 class="btn btn-primary fs-5"></button>
                         </div>
 
@@ -237,30 +245,51 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/jquery.validate.min.js"></script>
-    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         $(document).ready(function() {
 
-            $.ajax({
 
-                url: "/club-data",
-                type: "GET",
-                dataType: "json",
-                async: false,
-                success: function(data) {
+            fetch();
 
-                    let arr = data.data;
-                    // console.log(arr);
+            function fetch() {
 
-                    $('tbody').html("");
 
-                    $.each(arr, function(key, item) {
+                $('tbody').html('');
+                $.ajax({
 
-                        var srcLogo = `${item.club_logo}`;
-                        var srcBanner = `${item.club_banner}`;
+                    url: "/club-data",
+                    type: "GET",
+                    dataType: "json",
+                    async: false,
+                    success: function(response) {
 
-                        $('tbody').append(
-                            `<tr>
+
+
+                        if (response.data.length == 0) {
+                            console.log('yes');
+
+                            $('tbody').append(
+
+                                `<td colspan=14>Data Not Found</td>`
+
+                            );
+                        } else {
+
+
+
+                            let arr = response.data;
+                            // console.log(arr);
+
+                            $('tbody').html("");
+
+                            $.each(arr, function(key, item) {
+
+                                var srcLogo = `${item.club_logo}`;
+                                var srcBanner = `${item.club_banner}`;
+
+                                $('tbody').append(
+                                    `<tr>
                                                         <td>${item.id}</td>
                                                         <td>${item.group_id}</td>
                                                         <td>${item.business_name}</td>
@@ -273,23 +302,25 @@
                                                         <td>${item.website_link}</td>
                                                         <td>
                                                         
-                                                            <img src=${srcLogo} id="logo${item.id}" style='height:50px' class='rounded-5' alt="img not found">
+                                                            <img src=${srcLogo} id="logo${item.id}" style='height:50px; width:50px' class='rounded-5' alt="img not found">
                                                             
                                                             </td>
                                                         <td>
                                                         
-                                                            <img src=${srcBanner} id="banner${item.id}" style='height:50px' class='rounded-5' alt="img not found">
+                                                            <img src=${srcBanner} id="banner${item.id}" style='height:50px; width:100px' class='rounded-4' alt="img not found">
                                                             
                                                             </td>
-                                                        <td><button  data-id=${item.id} data-action=club/${item.id}   data-type="PUT"  id="editBtn" class=" btn btn-primary btn-sm">Edit</button></td>
-                                                        <td><button   data-id=${item.id} id="deleteBtn" class="btn btn-danger btn-sm">Delete</button></td>
+                                                        <td><button  data-id=${item.id} data-action=club/${item.id}   data-type="PUT"  id="editBtn" class=" btn btn-warning ">Edit</button></td>
+                                                        <td><button   data-id=${item.id} id="deleteBtn" class="btn btn-danger ">Delete</button></td>
                                                     </tr>`
-                        );
-                    });
+                                );
+                            });
+                        }
+                    },
 
-                },
+                });
 
-            });
+            }
 
             let type;
             let url;
@@ -304,7 +335,12 @@
 
             $('body').on('click', '#submitBtn', function(event) {
 
+                text= "Club Added Successfully !";
 
+                $('#method').val('POST');
+                
+                $(".error").html('');
+                $(".error").removeClass("error");
                 $('#exampleModal').modal('show');
                 $('#submit1').html('Add');
                 $('#exampleModalLabel').html('New Club');
@@ -446,14 +482,12 @@
 
                         console.log("url : ", url);
 
-                        if(type == 'PUT')
-                        {
-                            text = "User Edited Successfully";
-                        }
-                        else{
+                        if (type == 'PUT') {
+                            text = "Club Edited Successfully";
+                        } else {
 
-                            text = "User Added Successfully";
-                            
+                            text = "Club Added Successfully";
+
                         }
 
                         $.ajax({
@@ -468,23 +502,22 @@
                             async: false,
                             success: function(response) {
 
-                                swal({
-                                    title: text,
-                                    text: "You clicked the button!",
+                                Swal.fire({
+                                    position: "center",
                                     icon: "success",
-                                    
+                                    title: text,
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                }).then((value) => {
+                                    if (value) {
 
-                                    confirmButtonText: "<span><i class='la la-headphones'></i><span>I am game!</span></span>",
-                                    confirmButtonClass: "btn btn-danger m-btn m-btn--pill m-btn--air m-btn--icon",
+                                        fetch();
+                                    }
 
-                                    showCancelButton: true,
-                                    cancelButtonText: "<span><i class='la la-thumbs-down'></i><span>No, thanks</span></span>",
-                                    cancelButtonClass: "btn btn-secondary m-btn m-btn--pill m-btn--icon"
-                                }).then((value)=>{
-                                        if(value)location.reload()
                                 });
 
-                            $('#exampleModal').modal('hide');
+
+                                $('#exampleModal').modal('hide');
 
                             },
                             error: function(response) {
@@ -500,13 +533,19 @@
 
             $('body').on('click', `#editBtn`, function(event) {
 
+                text = "Club Edited Successfully !";
+
                 var c_id = $(this).data('id');
 
                 console.log(c_id);
+                // $('#submitClub').trigger('reset');
+                // $("#submitClub").validate().resetForm();
+              
+                $(".error").html('');
+                $(".error").removeClass("error");
+
                 $('#submit1').html('Edit');
                 $('#exampleModalLabel').html('Edit Club');
-
-
 
                 url = $(this).data('action');
                 type = $(this).data('type');
@@ -541,52 +580,47 @@
 
                 var club_id = $(this).data("id");
 
-                $.ajax({
-                    type: "DELETE",
-                    url: "{{ url('club') }}" + '/' + club_id,
-                    success: function(data) {
+                Swal.fire({
+                    title: "Are you sure?",
+                    text: "You won't be able to revert this!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Yes, delete it!"
+                }).then((result) => {
+                    if (result.isConfirmed) {
 
-                        swal({
-                        title: 'Are you sure?',
-                        text: "You won't be able to revert this!",
-                        type: 'warning',
-                        showCancelButton: true,
-                        confirmButtonText: 'Yes, delete it!',
-                        cancelButtonText: 'No, cancel!',
-                        reverseButtons: true,
+                        $.ajax({
+                            type: "DELETE",
+                            url: "{{ url('club') }}" + '/' + club_id,
+                            success: function(data) {
 
-                    }).then((value)=>{
-                                if(value)
-                                {
-
-                                    location.reload();
-                                }
-
-                        }).then(function (result) {
-                            if (result.value) {
-                                swal(
-                                    'Deleted!',
-                                    'User is Deleted Successfully.',
-                                    'success'
-                                )
-                                // result.dismiss can be 'cancel', 'overlay',
-                                // 'close', and 'timer'
-                            } else if (result.dismiss === 'cancel') {
-                                swal(
-                                    'Cancelled',
-                                    'User is safe :)',
-                                    'error',
-                                )
+                                fetch();
+                            },
+                            error: function(data) {
+                                console.log('Error:', data);
                             }
-                    })
 
-                    },
-                    error: function(data) {
-                        console.log('Error:', data);
+
+                        });
+
+
+
+                        Swal.fire({
+                            position: "center",
+                            icon: "success",
+                            title: "Club added successfully",
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+
+
                     }
+                })
 
 
-                });
+
             });
         });
     </script>

@@ -117,16 +117,12 @@ class ClubController extends Controller
         return response()->json();
     }
 
-    /**
-     * Display the specified resource.
-     */
+  
     public function show(string $id)
     {
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
+  
     public function edit(string $id)
     {
 
@@ -136,23 +132,20 @@ class ClubController extends Controller
         return response()->json($club);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
         $club = Club::where('id', '=', $id)->first();
       
-        $Logofile = public_path().'/'.$club->first()->getOriginal('club_logo');
-        $Bannerfile = public_path().'/'.$club->first()->getOriginal('club_banner');
-
+        
+        $Logofile = public_path().'/'.$club->club_logo;
+        $Bannerfile = public_path().'/'.$club->club_banner;
 
            unlink($Logofile);
            unlink($Bannerfile);
 
         
-        $bannerPath = public_path('uploads/logo');
-        $logoPath = public_path('uploads/banner');
+        $bannerPath = public_path('uploads/banner');
+        $logoPath = public_path('uploads/logo');
         
         // dd($request->file('logo'));
         $logoFile = $request->logo;
@@ -211,8 +204,8 @@ class ClubController extends Controller
         $Bannerfile = public_path().'/'.$club->first()->getOriginal('club_banner');
 
 
-           unlink($Logofile);
-           unlink($Bannerfile);
+           unlink($club->first()->getOriginal('club_logo'));
+           unlink($club->first()->getOriginal('club_banner'));
 
 
         // File::delete($Logofile);
