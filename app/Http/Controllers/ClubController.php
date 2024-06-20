@@ -12,11 +12,19 @@ class ClubController extends Controller
     /**
      * Display a listing of the resource.
      */
+
+
     public function index()
     {
-        return view('club');
+
+        $data = Club::all(); 
+
+        return view('club',compact('data'));
+        // return view('club');
+
     }
 
+    // to display the club
     public function display()
     {
 
@@ -29,11 +37,17 @@ class ClubController extends Controller
             $id = Club::get('id')->last()->getOriginal('id') + 1;
         }
 
-        $data  = Club::all();
+        $data  = Club::paginate(5);
+        // $data  = Club::all();
 
-        return response()->json(['data' => $data, 'id' => $id]);
+        
+        
+        return response([$data,$id]);
+        // return response()->json(['data' => $data, 'id' => $id]);
     }
 
+
+    // to fetch  the unique id
     public function fetchId()
     {
 
@@ -48,26 +62,10 @@ class ClubController extends Controller
         return response()->json(['id' => $id]);
     }
 
-
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
-    {
+    {  }
 
-        $id = 1;
-
-        if (Club::get('id')) {
-
-            $id = Club::get('id')->last()->getOriginal('id') + 1;
-        }
-
-        return view('club', compact('id'));
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
+    
     public function store(Request $request)
     {
         // dd($request->all());
@@ -81,13 +79,15 @@ class ClubController extends Controller
         }
 
 
-        $bannerPath = public_path('uploads/logo'); // Example path outside 'public' folder
-        $logoPath = public_path('uploads/banner'); // Example path outside 'public' folder
+        $bannerPath = public_path('uploads/banner');
+        $logoPath = public_path('uploads/logo');
 
-        $logoFile = $request->file('logo');
         $bannerFile = $request->file('banner');
+        $logoFile = $request->file('logo');
+
 
         
+
         if ($logoFile->isValid() &&  $bannerFile->isValid()) {
             $logo = time() . '.' . $logoFile->getClientOriginalExtension();
             $banner = time() . '.' . $bannerFile->getClientOriginalExtension();
@@ -114,20 +114,20 @@ class ClubController extends Controller
         ]);
 
 
-        return response()->json();
+        return response()->json([$bannerFile->getClientOriginalName(),$logoFile->getClientOriginalName(),$id]);
     }
 
-  
+
     public function show(string $id)
     {
     }
 
-  
+
     public function edit(string $id)
-    {
+    {   
+        
 
         $club = Club::where('id', $id)->first();
-        // dd($club);
 
         return response()->json($club);
     }
@@ -135,22 +135,21 @@ class ClubController extends Controller
     public function update(Request $request, string $id)
     {
         $club = Club::where('id', '=', $id)->first();
-      
-        
-        $Logofile = public_path().'/'.$club->club_logo;
-        $Bannerfile = public_path().'/'.$club->club_banner;
 
-           unlink($Logofile);
-           unlink($Bannerfile);
 
-        
+        $Logofile = public_path() . '/' . $club->club_logo;
+        $Bannerfile = public_path() . '/' . $club->club_banner;
+
+        unlink($Logofile);
+        unlink($Bannerfile);
+
         $bannerPath = public_path('uploads/banner');
         $logoPath = public_path('uploads/logo');
-        
+
         // dd($request->file('logo'));
         $logoFile = $request->logo;
         $bannerFile = $request->banner;
-    
+
 
 
         if ($logoFile->isValid() &&  $bannerFile->isValid()) {
@@ -162,6 +161,8 @@ class ClubController extends Controller
 
         $Logo = "uploads/logo/$logo";
         $Banner = "uploads/banner/$banner";
+
+
 
 
         $data = [
@@ -189,23 +190,19 @@ class ClubController extends Controller
         return response()->json();
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
 
-     
     public function destroy(string $id)
     {
 
         $club = Club::where('id', $id)->get();
 
 
-        $Logofile = public_path().'/'.$club->first()->getOriginal('club_logo');
-        $Bannerfile = public_path().'/'.$club->first()->getOriginal('club_banner');
+        $Logofile = public_path() . '/' . $club->first()->getOriginal('club_logo');
+        $Bannerfile = public_path() . '/' . $club->first()->getOriginal('club_banner');
 
 
-           unlink($club->first()->getOriginal('club_logo'));
-           unlink($club->first()->getOriginal('club_banner'));
+        unlink($club->first()->getOriginal('club_logo'));
+        unlink($club->first()->getOriginal('club_banner'));
 
 
         // File::delete($Logofile);
@@ -217,3 +214,4 @@ class ClubController extends Controller
         return response()->json($club);
     }
 }
+

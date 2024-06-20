@@ -3,11 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Models\Club;
+use App\Models\Discount;
 use App\Models\Products;
+
+use App\Jobs\DiscountJob;
 use Illuminate\Http\Request;
 use App\Http\Requests\ProductForm;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Artisan;
 
 class ProductController extends Controller
 {
@@ -20,15 +25,22 @@ class ProductController extends Controller
         return view('product');
     }
 
+    public function discount(){
+
+        $data  = Products::with('discounts')->get()->pluck('discounts')[0];
+    
+        return response()->json($data);
+    }
+
+
 
     public function create(Request $request)
     {
 
-        $product = Products::with('clubs')->get();
-
-        
+        $product = Products::all();
 
         return response()->json($product);
+       
     }
 
     public function fetchClub()
@@ -53,20 +65,13 @@ class ProductController extends Controller
         return response()->json(['id' => $id]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    
+    public function store(ProductForm $request)
     {
 
-        // dd($request);
+  
 
-        $request->validate([
 
-            'attr' => 'required|not_in:0',
-            'title' => 'required|max:255',
-            'type' => 'required|max:100',
-        ]);
 
         if (Products::get('id')->all() == []) {
 
@@ -76,7 +81,9 @@ class ProductController extends Controller
             $id = Products::get('id')->last()->getOriginal('id') + 1;
         }
 
+        // discount entries for product
 
+        dispatch(new DiscountJob($id));
 
         $product = new Products();
         $product->id = $id;
@@ -87,34 +94,30 @@ class ProductController extends Controller
 
         $product->save();
 
+
+                // Artisan::call('app:check-expiry',['expiry_date'=>$id]);
+
         return response()->json();
+        // return redirect()->route("checkExpiry",$id);
     }
 
-    /**
-     * Display the specified resource.
-     */
+    public function checkExpiry($id){
+
+        $expiry_date = Discount::where('product_id',$id)->get('expiry_date');
+
+        dd($expiry_date[0]->pluck('expiry_date'));
+        
+
+        Artisan::call('app:check-expiry',['expiry_date'=>$expiry_date]);
+
+    }
+
+
     public function show(string $id)
     {
-
-
-        // if (Products::get('id')->all() == []) {
-
-        //     $id = 1;
-        // } else {
-
-        //     $id = Products::get('id')->last()->getOriginal('id') + 1;
-        // }
-
-        // $club = Club::all();
-
-        // $data = Products::all();
-
-        // return view('product', compact('data', 'club', 'id'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
+
     public function edit(string $id)
     {
 
@@ -124,30 +127,15 @@ class ProductController extends Controller
         return response()->json($product);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function update(ProductForm $request, string $id)
     {
-
-        // dd($request->all());
-
-        // $data =  Products::where('id',$id)->get();
-
-        $request->validate([
-
-            'attr' => 'required|not_in:0',
-            'title' => 'required|max:255',
-            'type' => 'required|max:100',
-        ]);
-       
 
         $product = Products::where('id', '=', $id)->first();
         $product['club_id'] = $request->attr;
         $product['title'] = $request->title;
-        $product['product_title'] = $request->Ptitle; 
+        $product['product_title'] = $request->Ptitle;
         $product['type'] = $request->type;
-        
+
 
         // Products::where('id','=',$id)->update([$product]);
 
@@ -156,9 +144,6 @@ class ProductController extends Controller
         return response()->json();
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
         $post = Products::where('id', $id)->delete();

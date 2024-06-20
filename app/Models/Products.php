@@ -9,7 +9,7 @@ class Products extends Model
 {
     use HasFactory;
 
-    public $timestamps = false;
+  
 
     protected $fillable = ['id','club_id','title','product_title','type'];
 
@@ -18,5 +18,13 @@ class Products extends Model
         return $this->belongsTo(Club::class,'club_id','id');
 
     }
+
+    public function discounts(){
+
+        
+        return $this->hasMany(Discount::class,'product_id','id');
+
+    }
+    
 
 }

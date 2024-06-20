@@ -12,7 +12,7 @@
 </head>
 
 <style>
-    span {
+    span,small {
         color: red;
     }
 
@@ -36,7 +36,7 @@
 
 
 
-        <table class="table fs-4 border border-primary-subtle " style="width: 75%">
+        <table class="table border border-primary-subtle " style="width: 75%">
 
             <thead>
 
@@ -46,7 +46,7 @@
                     </th>
 
                     <th>
-                        club Id 
+                        club (Id-Name)
                     </th>
                     <th>
 
@@ -82,7 +82,7 @@
         <br>
         <br>
         <button type="button" id="submitBtn" data-type="POST" class=" btn btn-primary fs-4 "
-            style="width: 500px ; height:80px" id="submitBtn" data-action="/product" data-bs-dismiss="model">Add
+            style="width: 300px ; height:60px" id="submitBtn" data-action="/product" data-bs-dismiss="model">Add
             Product</button>
 
     </center>
@@ -98,7 +98,9 @@
                 </div>
                 <div class="modal-body">
 
-                    <h4 id="error" style="color:red"></h4>
+                    <div id="error" class="d-none alert alert-danger" role="alert">
+                        A simple danger alert—check it out!
+                      </div>
 
                     <form data-action="{{ route('product.store') }}" id="submitProduct" class="fs-5" method="post">
                         <input name="_method" id='method' type="hidden" value="POST">
@@ -127,9 +129,9 @@
 
 
                         <label for="clubs">Club <span>*</span></label>
-                        <div class="mb-3">
+                        <div class="mb-3 " id=attr>
                             <select name="attr" id="club" style="width: 200px; height:40px; font-size:18px">
-                                
+
                             </select>
                         </div>
                         <br>
@@ -174,27 +176,20 @@
 
                 $.get('/fetchClub', function(response) {
 
-                    // console.log('response : ',response.length);
-                    // if (response.length == 0) {
-                    //     $('#club').append(
-
-                    //         `<option >No Club</option>`
-                    //     );
-                    // }
-                        
+                  
                     $('#club').empty();
-                        $.each(response, function(key, value) {
-                            
-                            $('#club').append(
+                    $('#club').append(
 
-                                `<option value="0" for='default' id="default"> Select Club</option>`
-                            )
+                        `<option value="0" for='default' id="default"> Select Club</option>`
+                    )
+                    $.each(response, function(key, value) {
 
-                            $('#club').append(
-                                
-                                `<option value=${value.id}>${value.club_name}</option>`
-                            );
-                        });
+
+                        $('#club').append(
+
+                            `<option value=${value.id}>${value.club_name}</option>`
+                        );
+                    });
 
                 });
 
@@ -230,7 +225,7 @@
                                 $('tbody').append(
                                     `<tr>
                                 <td>${value.id}</td>
-                                <td>${value.club_id}-${value.clubs.club_name}</td>
+                                <td>${value.club_id}</td>
                                 <td>${value.title}</td>
                                 <td>${value.product_title}</td>
                                 <td>${value.type}</td>
@@ -245,7 +240,8 @@
                     },
                     error: function(response) {
 
-                        console.log(response);
+                      
+
                         $.each(response.responseJSON.errors, function(key, value) {
                             $('#error').append(value + '<br>');
                         });
@@ -263,13 +259,13 @@
 
             $('body').on('click', '#submitBtn', function(event) {
 
-                text= "Product Added Successfully";
+                text = "Product Added Successfully";
 
                 $('#method').val('POST');
                 $('#submitProduct').trigger('reset');
-                $('#error').empty();
+                $('.err').empty();
+        
                 $('#exampleModal').modal('show');
-
                 $('#club').empty();
 
                 url = $(this).data('action');
@@ -291,16 +287,13 @@
             $('#submitProduct').on('submit', function(event) {
 
                 event.preventDefault();
-
+                
 
                 if (type == "PUT") {
 
                     url = "product/" + $('#editBtn').data('id');
-
-                }
-
-                if (type == 'PUT') {
                     text = "Product Edited Successfully";
+
                 } else {
 
                     text = "Product Added Successfully";
@@ -335,21 +328,39 @@
 
                     },
                     error: function(response) {
-                        $('#error').empty();
-                        console.log(response);
-                        $.each(response.responseJSON.errors, function(key, value) {
-                            $('#error').append(value + '<br>');
-                        });
+                        
+                        $('.err').empty();
+
+                        
+                        let error = response.responseJSON.errors;
+
+                        
+                        $.each(error, function(key, value) {
+                            
+                            
+                        
+
+                        $(`#${key}`).after(`<small class='err'>${value[0]}</small>`);
+                        // $('#error').append(value + '<br>');
+                        
+                    });
 
 
-                    }
+
+                        // $.each(response.responseJSON.errors, function(key, value) {
+                        //     $('#error').append(value + '<br>');
+                        // });
+
+
+                    },
+                  
 
                 });
             });
 
             $('body').on('click', '#editBtn', function(event) {
 
-
+                
                 text = "Product Edited Successfully";
 
                 var p_id = $(this).data('id');
@@ -359,9 +370,8 @@
                 type = $(this).data('type');
 
                 $('#submitProduct').trigger('reset');
-                $('#error').empty();
+                $('.err').empty();
                 $('#exampleModal').modal('show');
-
                 $('#method').val('PUT');
 
                 fetchClub();

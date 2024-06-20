@@ -11,7 +11,7 @@ class ProductForm extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,21 +22,18 @@ class ProductForm extends FormRequest
     public function rules(): array
     {
         return [
-            'attr' => 'required',
+            'attr' => 'required|not_in:0',
             'title' => 'required|max:255',
-            'Ptitle' => 'required|max:255',
-            'type'=> 'required|max:100',
+            'type' => 'required|max:100',
         ];
     }
 
     public function messages()
-{
-    return [
-        'attr.required' => 'The Club_id field is required.',
-        'title.required' => 'The title field is required.',
-        'Ptitle.required'=>'The product_title field is required.',
-        'type.required' => 'The product_title field is required,',
-        
-    ];
-}
+    {
+        return [
+            'attr.required' => 'Please Select a Club.',
+            'title.required' => 'The Title is Required.',
+            'type.required' => 'The Type  is Required,',
+        ];
+    }
 }
