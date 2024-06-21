@@ -32,7 +32,10 @@ Route::get('fetchClub', [ProductController::class, 'fetchClub']);
 Route::get('fetchId', [ProductController::class, 'fetchId']);
 Route::get('fetch-id', [ClubController::class, 'fetchId']);
 
+
 // Route::get('pagination',[ClubController::class,'pagination'])->name('club-page');
 Route::get('discount',[ProductController::class,'discount']);
 Route::get('/checkExpiry/{id}',[ProductController::class,'checkExpiry']);
+
+Route::get('discount/{id}',[DiscountController::class, 'display']);
 

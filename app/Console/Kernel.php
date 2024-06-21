@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Console\Commands\CheckExpiry;
 use App\Models\Discount;
 use App\Models\Products;
 use Illuminate\Support\Carbon;
@@ -23,10 +24,8 @@ class Kernel extends ConsoleKernel
         // })
         // ->dailyAt('00:01');
         
-
-        $schedule->command("app:check-expiry")->everySecond()->sendOutputTo(storage_path('/logs/laravel.log'));
+        $schedule->command(CheckExpiry::class,['2024-06-20'])->everySecond()->sendOutputTo(storage_path('/logs/laravel.log'));
         
-
     }
 
     /**

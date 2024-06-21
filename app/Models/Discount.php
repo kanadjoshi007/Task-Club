@@ -11,5 +11,14 @@ class Discount extends Model
 {
     use HasFactory;
 
+    protected $fillable = ['product_id,status'];
+
+    public $timestamps = false;
     
+    public function products(){
+
+       return $this->belongsTo(Products::class,'product_id','id');
+
+    }
+
 }

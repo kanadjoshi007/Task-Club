@@ -25,26 +25,13 @@ class ClubController extends Controller
     }
 
     // to display the club
-    public function display()
-    {
+    // public function display()
+    // {
 
 
-        if (Club::get('id')->all() == []) {
-
-            $id = 1;
-        } else {
-
-            $id = Club::get('id')->last()->getOriginal('id') + 1;
-        }
-
-        $data  = Club::paginate(5);
-        // $data  = Club::all();
-
-        
-        
-        return response([$data,$id]);
-        // return response()->json(['data' => $data, 'id' => $id]);
-    }
+       
+    //     // return response()->json(['data' => $data, 'id' => $id]);
+    // }
 
 
     // to fetch  the unique id
@@ -63,7 +50,23 @@ class ClubController extends Controller
     }
 
     public function create()
-    {  }
+    { 
+        if (Club::get('id')->all() == []) {
+
+            $id = 1;
+        } else {
+
+            $id = Club::get('id')->last()->getOriginal('id') + 1;
+        }
+
+        $data  = Club::paginate(5);
+        // $data  = Club::all();
+
+        
+        
+        return response([$data,$id]);
+
+     }
 
     
     public function store(Request $request)
@@ -89,8 +92,8 @@ class ClubController extends Controller
         
 
         if ($logoFile->isValid() &&  $bannerFile->isValid()) {
-            $logo = time() . '.' . $logoFile->getClientOriginalExtension();
-            $banner = time() . '.' . $bannerFile->getClientOriginalExtension();
+            $logo = time().'.' . $logoFile->getClientOriginalExtension();
+            $banner = time().'.' . $bannerFile->getClientOriginalExtension();
             $logoFile->move($logoPath, $logo);
             $bannerFile->move($bannerPath, $banner);
         }
@@ -118,15 +121,19 @@ class ClubController extends Controller
     }
 
 
-    public function show(string $id)
+    public function show(string $name)
     {
+        // dd($name);
+
+      $club =  Club::where('club_name','=',$name)->orWhere('club_slug','=',$name)->orWhere('club_state','=',$name)->paginate(5);
+
+        return response([$club,null]);
+
     }
 
 
     public function edit(string $id)
     {   
-        
-
         $club = Club::where('id', $id)->first();
 
         return response()->json($club);

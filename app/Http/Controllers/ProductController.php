@@ -36,8 +36,9 @@ class ProductController extends Controller
 
     public function create(Request $request)
     {
+        
 
-        $product = Products::all();
+        $product = Products::paginate(5);
 
         return response()->json($product);
        
@@ -68,10 +69,6 @@ class ProductController extends Controller
     
     public function store(ProductForm $request)
     {
-
-  
-
-
 
         if (Products::get('id')->all() == []) {
 
@@ -113,9 +110,15 @@ class ProductController extends Controller
     }
 
 
-    public function show(string $id)
+    public function show(string $title)
     {
+        
+        $products = Products::where('title','=',$title)->orWhere('product_title','=',$title)->orWhere('type','=',$title)->paginate(5);
+
+        return response($products);
+
     }
+
 
 
     public function edit(string $id)
@@ -135,7 +138,6 @@ class ProductController extends Controller
         $product['title'] = $request->title;
         $product['product_title'] = $request->Ptitle;
         $product['type'] = $request->type;
-
 
         // Products::where('id','=',$id)->update([$product]);
 

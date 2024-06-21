@@ -19,12 +19,12 @@ class Products extends Model
 
     }
 
-    public function discounts(){
+    // public function discounts(){
 
         
-        return $this->hasMany(Discount::class,'product_id','id');
+    //     return $this->hasMany(Discount::class,'product_id','id');
 
-    }
+    // }
     
 
 }
