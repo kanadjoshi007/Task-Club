@@ -9,8 +9,6 @@ class Products extends Model
 {
     use HasFactory;
 
-  
-
     protected $fillable = ['id','club_id','title','product_title','type'];
 
     public function clubs(){

@@ -113,7 +113,7 @@ class ProductController extends Controller
     public function show(string $title)
     {
         
-        $products = Products::where('title','=',$title)->orWhere('product_title','=',$title)->orWhere('type','=',$title)->paginate(5);
+        $products = Products::where('title','like','%'.$title.'%')->orWhere('product_title','like','%'.$title.'%')->orWhere('type','like','%'.$title.'%')->paginate(5);
 
         return response($products);
 

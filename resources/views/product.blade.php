@@ -18,7 +18,16 @@
         font-size: 75%;
     }
 
+    body{
+        background-image: linear-gradient(to right top, #eef0f2, #e9ebee, #e3e6e9, #dee2e5, #d9dde1);
+    }
 
+
+    
+    table {
+    border-collapse: separate;
+    border-spacing: 0 1em;
+}
 
 
     .table td,
@@ -29,31 +38,41 @@
 </style>
 
 <body>
-
+    
     <center>
         <div class="p-5">
-
+            
             <h1>Product Details</h1>
         </div>
     </center>
     <br><br>
     <center>
 
-        <div class=" p-4" style="width:75%">
+        <div class="container p-4" style="width:60%">
+            
+            {{-- <form class="" id='search'> --}}
+                <div class="row d-flex p-2 shadow-lg p-3 mb-5 bg-body rounded m-3">
 
-            <form class="d-flex p-2" id='search'>
-                <input class="form-control p-2 m-2 w-auto" id='bar' type="search" placeholder="Search"
-                    aria-label="Search">
-                <button class="btn btn-outline-primary p-2 m-2" type="submit">Search</button>
-            </form>
+                    <div class="col-6">
+                        
+                        <input class="form-control p-2 m-2 w-auto border border-4" id='bar' type="search" placeholder="Search"
+                        aria-label="Search">
+                </div>
+                <div class="col-6">
+                    <button type="button" id="submitBtn" data-type="POST" class=" btn btn-lg btn-secondary fs-3 w-25   "
+                    style="width: 300px ; height:60px" id="submitBtn" data-action="/product" data-bs-dismiss="model"><i class="bi bi-bag-plus-fill"></i></button>
+                    
+                </div>
+            </div>
+            {{-- </form> --}}
         </div>
 
-        <table class="table border border-primary-subtle pt-4 " style="width: 75%">
+        <table class="table" style="width: 60%">
 
-            <thead>
+            <thead class="shadow-lg p-3  bg-body rounded m-3 mb-5">
 
-                <tr class="table-primary">
-                    <th>
+                <tr class="table-secondary">
+                    <th >
                         ID
                     </th>
 
@@ -86,7 +105,7 @@
 
             </thead>
 
-            <tbody>
+            <tbody class="align-middle">
 
             </tbody>
 
@@ -96,9 +115,6 @@
     <center>
         <br>
         <br>
-        <button type="button" id="submitBtn" data-type="POST" class=" btn btn-primary fs-4 "
-            style="width: 300px ; height:60px" id="submitBtn" data-action="/product" data-bs-dismiss="model">Add
-            Product</button>
 
     </center>
 
@@ -127,7 +143,7 @@
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                  <button type="button" class="btn btn-primary">Understood</button>
+                
                 </div>
               </div>
             </div>
@@ -204,7 +220,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
     </script>
-
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/jquery.validate.min.js"></script>
@@ -259,10 +275,10 @@
 
 
             // when user search any product
-            $('body').on('submit', '#search', function(event) {
+            $('body').on('input', '#bar', function(event) {
 
                 event.preventDefault();
-
+            
                 let data = $('#bar').val();
 
                 $.ajax({
@@ -271,9 +287,9 @@
 
                     success: function(response) {
 
-                        console.log(response);
-
                         let a = 0;
+
+                        if(event.originalEvent.data != null){
 
                         response.links.forEach(element => {
 
@@ -285,7 +301,10 @@
 
                             a++;
                         });
-                    },
+                    }else{
+                        fetch();
+                    }
+                },
                 });
             });
 
@@ -320,15 +339,20 @@
                             $.each(response.data, function(key, value) {
 
                                 $('tbody').append(
-                                    `<tr>
-                                <td>${value.id}</td>
+                                    `<tr class='shadow-lg p-3  bg-body rounded m-3'>
+                                        <td class='align-middle'>
+                                            
+                                            <div class='rounded-circle border border-dark d-flex align-items-center justify-content-center ' style='height:50px;width:50px; background-color:black; color:white'>
+                                                ${value.id}
+                                            </div>
+                                        </td>
                                 <td>${value.club_id}</td>
                                 <td>${value.title}</td>
                                 <td>${value.product_title}</td>
-                                <td>${value.type}</td>
-                                <td><button class="btn btn-warning"  data-id=${value.id} data-type='PUT' id="editBtn">Edit </button></td>
-                                <td><button class="btn btn-danger"  data-id=${value.id} id="deleteBtn">Delete </button></td>
-                                <td><button id="discountBtn" class="btn btn-primary" data-id=${value.id}  >Discount</button></td>
+                                <td>${value.type}</td> 
+                                <td><button class="btn btn-lg btn-warning"  data-id=${value.id} data-type='PUT' id="editBtn"><i class="bi bi-pen-fill"></i></button></td>
+                                <td><button class="btn btn-lg btn-danger"  data-id=${value.id} id="deleteBtn"><i class="bi bi-trash-fill"></i></button></td>
+                                <td><button id="discountBtn" class="btn btn-lg btn-info" data-id=${value.id}  ><i class="bi bi-currency-dollar"></i></button></td>
                                 </tr>
                                 `
 
@@ -444,6 +468,9 @@
 
                     url = "product/" + $('#editBtn').data('id');
                     text = "Product Edited Successfully";
+
+                    
+
 
                 } else {
                     text = "Product Added Successfully";

@@ -38,7 +38,7 @@ class CheckExpiry extends Command
             
         
           
-                $currentDate = Carbon::parse('2024-06-20')->format('Y-m-d'); 
+                $currentDate = Carbon::parse(now())->format('Y-m-d'); 
             
                 Discount::where('expiry_date','LIKE',$currentDate.'%')->update(['status'=>'inactive']);
                 

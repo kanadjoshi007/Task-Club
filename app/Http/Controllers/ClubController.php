@@ -24,14 +24,6 @@ class ClubController extends Controller
 
     }
 
-    // to display the club
-    // public function display()
-    // {
-
-
-       
-    //     // return response()->json(['data' => $data, 'id' => $id]);
-    // }
 
 
     // to fetch  the unique id
@@ -125,7 +117,7 @@ class ClubController extends Controller
     {
         // dd($name);
 
-      $club =  Club::where('club_name','=',$name)->orWhere('club_slug','=',$name)->orWhere('club_state','=',$name)->paginate(5);
+      $club =  Club::where('club_name','like','%'.$name.'%')->orWhere('club_slug','like','%'.$name.'%')->orWhere('club_state','like','%'.$name.'%')->paginate(5);
 
         return response([$club,null]);
 
@@ -144,18 +136,32 @@ class ClubController extends Controller
         $club = Club::where('id', '=', $id)->first();
 
 
-        $Logofile = public_path() . '/' . $club->club_logo;
-        $Bannerfile = public_path() . '/' . $club->club_banner;
+        if($request->file('logo') || $request->file('banner'))
+        {
+            if($request->file('logo'))
+            {
+                $Logofile = public_path() . '/' . $club->club_logo;
+                unlink($Logofile);
+                $logoPath = public_path('uploads/logo');
+                $logoFile = $request->logo;
+              
 
-        unlink($Logofile);
-        unlink($Bannerfile);
+            }
 
-        $bannerPath = public_path('uploads/banner');
-        $logoPath = public_path('uploads/logo');
+            if($request->file('banner')){
+
+                $Bannerfile = public_path() . '/' . $club->club_banner;
+                unlink($Bannerfile);
+                $bannerPath = public_path('uploads/banner');
+                $bannerFile = $request->banner;
+            }
+
+       
+
+
+
 
         // dd($request->file('logo'));
-        $logoFile = $request->logo;
-        $bannerFile = $request->banner;
 
 
 
@@ -168,8 +174,6 @@ class ClubController extends Controller
 
         $Logo = "uploads/logo/$logo";
         $Banner = "uploads/banner/$banner";
-
-
 
 
         $data = [
@@ -193,6 +197,29 @@ class ClubController extends Controller
 
         $club->save();
 
+    }
+
+    else{
+        $data = [
+            'id' => $id,
+            'group_id' => $request->input('groupId'),
+            'business_name' => $request->input('Bname'),
+            'club_number' => $request->number,
+            'club_name' => $request->name,
+            'club_state' => $request->state,
+            'club_description' => $request->desc,
+            'club_slug' => $request->slug,
+            'website_title' => $request->title,
+            'website_link' => $request->link,
+        ];
+
+        $club = Club::where('id', '=', $id)->first();
+
+        $club->fill($data);
+
+        $club->save();
+
+    }
 
         return response()->json();
     }

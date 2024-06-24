@@ -11,7 +11,29 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <style>
-        .modal-ku {
+
+        
+    body{
+
+        background-color: #F2F0EF;
+
+
+    }
+
+    .table th{
+        background-color: #F2F0EF;
+        /* color: white; */
+
+    }
+
+    .table td{
+        /* background-color: #2D82B5;
+        
+        color: white */
+
+    }
+
+.modal-ku {
             width: 750px;
             margin: auto;
         }
@@ -22,8 +44,13 @@
             font-size: 75%;
         }
 
-        .form-control[type=file]{
+        .form-control[type=file] {
             color: black;
+        }
+
+        table {
+            border-collapse: separate;
+            border-spacing: 0 1em;
         }
 
         .table td,
@@ -32,12 +59,10 @@
 
         }
 
-        .active{
-        background-color:grey;
-        color:black;
+        .active {
+            background-color: grey;
+            color: black;
         }
-
-        
     </style>
 </head>
 
@@ -53,29 +78,44 @@
     </center>
     <center>
 
-        <div class=" p-4" style="width:75%">
+        <div class="container p-4" style="width:60%">
 
-            <form class="d-flex p-2" id='search'>
+            <div class=" row d-flex p-2 shadow-lg p-3 mb-5 bg-body rounded m-3 " >
                 {{-- <div >
                     <button class="btn btn-outline-primary p-2 m-2" id="back" type="button" style='visibility: hidden'>Back</button>
                 </div> --}}
-                <input class="form-control p-2 m-2 w-auto" id='bar' type="search" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-primary p-2 m-2" type="submit">Search</button>
-            </form>
+                <div class="col-6 ">
+                    <input class="form-control p-2 m-2 w-auto border border-4" id='bar' type="search" placeholder="Search"
+                        aria-label="Search">
+
+                </div>
+                <div class="col-6 ">
+                    <button type="button" id="submitBtn" data-type="POST" class="btn btn-lg btn-secondary fs-3 w-25"
+                     id="submitBtn" style="width: 300px ; height:60px"  data-action="/club"><i class="bi bi-database-fill-add"></i></button><br><br>
+
+                </div>
+
+        
+        
+
+                {{-- <button class="btn btn-outline-primary p-2 m-2" type="submit">Search</button> --}}
+            </div>
         </div>
 
 
-        <table class='table border border-primary-subtle ' style="width: 80%">
+	
 
-            <thead>
-                <tr class="table-primary">
+        <table class='table' style="width: 80%">
+
+            <thead class="shadow-lg p-3  bg-body rounded m-3 mb-5 "  >
+                <tr  style="background-color: #2C6975"  >
                     <th >
                         ID
                     </th>
-                    <th >
+                    <th>
                         Group ID
                     </th>
-                    <th >
+                    <th>
 
                         Business Name
                     </th>
@@ -91,10 +131,10 @@
                         Club State
 
                     </th>
-                    <th >
+                    <th>
                         Description
                     </th>
-                    <th >
+                    <th>
                         Club Slug
                     </th>
 
@@ -125,7 +165,7 @@
 
                 </tr>
             </thead>
-            <tbody>
+            <tbody class="align-middle">
 
             </tbody>
 
@@ -135,23 +175,16 @@
 
 
 
-        <button type="button" id="submitBtn" data-type="POST" class=" btn btn-primary fs-5 m-4"
-            style="width: 300px ; height:60px" id="submitBtn" data-action="/club">Add
-            Club</button><br><br>
-
-
-
-
-
-        <nav aria-label="Page navigation example">
+        <nav aria-label="Page navigation example" class="mb-5">
             <ul class="pagination">
-                <div id="page-link" class="position-absolute bottom-25 start-50 translate-middle-x d-flex justify-content-center">
+                <div id="page-link"
+                    class="position-absolute bottom-25 start-50 translate-middle-x d-flex justify-content-center" >
 
                 </div>
             </ul>
         </nav>
 
-
+<br><br><br>
 
     </center>
 
@@ -168,7 +201,7 @@
 
                     <h4 id="error" style="color:red"></h4>
 
-                    <form data-action="{{ route('club.store') }}" id="submitClub" class="fs-5" method="post">
+                    <form data-action="{{ route('club.store') }}" id="submitClub" name="submitClub" class="fs-5" method="post">
 
                         <input name="_method" id='method' type="hidden" value="POST">
                         @csrf
@@ -189,7 +222,8 @@
                             <div class="col-6">
                                 <div class="mb-3">
 
-                                    <label for="club-id" class="form-label">Group Id <span id='star'>*</span></label>
+                                    <label for="club-id" class="form-label">Group Id <span
+                                            id='star'>*</span></label>
 
                                     <input type="number" class="form-control" id="groupId" name="groupId">
 
@@ -202,7 +236,8 @@
                             <input type="text" class="form-control" id="Bname" name="Bname">
                         </div>
                         <div class="mb-3">
-                            <label for="product-title" class="form-label">Club number <span id='star'>*</span></label>
+                            <label for="product-title" class="form-label">Club number <span
+                                    id='star'>*</span></label>
                             <input type="number" class="form-control" id="number" name="number">
                         </div>
 
@@ -217,9 +252,10 @@
                         </div>
 
                         <div>
-                            <label for="type" class="form-label">Club description <span id='star'>*</span></label>
-                            <div >
-                                <textarea class="form-control"  id="desc" name="desc" style="height: 100px"></textarea>
+                            <label for="type" class="form-label">Club description <span
+                                    id='star'>*</span></label>
+                            <div>
+                                <textarea class="form-control" id="desc" name="desc" style="height: 100px"></textarea>
                             </div>
                         </div>
                         <br>
@@ -229,12 +265,14 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="type" class="form-label">Website title <span id='star'>*</span></label>
+                            <label for="type" class="form-label">Website title <span
+                                    id='star'>*</span></label>
                             <input type="text" class="form-control" id="title" name="title">
                         </div>
 
                         <div class="mb-3">
-                            <label for="type" class="form-label">Website link <span id='star'>*</span></label>
+                            <label for="type" class="form-label">Website link <span
+                                    id='star'>*</span></label>
                             <input type="text" class="form-control" id="link" name="link">
                         </div><br>
 
@@ -244,10 +282,10 @@
                                 <div class="mb-3">
                                     <label for="type" class="form-label">Club logo <small>(jpg,png)</small>
                                         <span id='star'>*</span></label>
-                                    <input type="file" class="form-control" id="logo" name="logo">
+                                    <input type="file" class="form-control" data-prev='#logo-prev' onchange="showPreview(this)" id="logo" name="logo">
                                 </div>
-                                <div id="logo-img" class='img' style="visibility:hidden">
-    
+                                <div id="logo-img" class='img' >
+
                                 </div>
                             </div>
 
@@ -256,10 +294,10 @@
                                 <div class="mb-3">
                                     <label for="type" class="form-label">Club banner <small>(jpg,png)</small>
                                         <span id='star'>*</span></label>
-                                    <input type="file" class="form-control" id="banner" name="banner">
+                                    <input type="file" class="form-control" id="banner" data-prev='#banner-prev' onchange="showPreview(this)" name="banner">
                                 </div>
-                                <div id="banner-img" class='img' style="visibility:hidden">
-                                    
+                                <div id="banner-img" class='img' >
+
                                 </div>
                             </div>
                         </div>
@@ -285,17 +323,55 @@
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
     </script>
 
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
 
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/jquery.validate.min.js"></script>
-<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.13.1/additional-methods.js"></script>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.13.1/additional-methods.js">
+   
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
     <script>
+        function showPreview (element) {
+
+            
+            var file = element.files[0];
+            
+            var fr = new FileReader();
+            
+          
+            let setImg = $(`#${element.id}`).data('prev');
+            
+            if (file) {
+                
+                fr.readAsDataURL(file);
+
+                console.log(fr);
+
+            }
+
+            $.ajax({
+
+                url:fr.result,
+                type:'GET',
+                success:function(response){
+                
+                    $(setImg).attr('src',fr.result);
+                }
+            })
+
+           
+        }
+    </script>
 
 
+
+    <script>
         $(document).ready(function() {
 
             let page = 1;
@@ -303,9 +379,10 @@
             $('body').on('click', '.page', function(event) {
 
                 page = $(this).data('page');
-                
-                $(this).parent().closest('.li').addClass('active');
 
+                console.log($(this));
+
+                $(this).css({"backgroundColor":"black","color":"white"});
                 fetch();
 
             });
@@ -313,11 +390,12 @@
             fetch();
 
             // when user search any product
-            $('body').on('input','#search',function(event){
-                
+            $('body').on('input', '#bar', function(event) {
+
                 event.preventDefault();
 
-               let data = $('#bar').val();
+
+                let data = $('#bar').val();
 
                 $.ajax({
 
@@ -325,51 +403,55 @@
                     url: `club/${data}`,
                     method: 'GET',
 
-                    success:function(response){
+                    success: function(response) {
 
-                        $('#back').css('visibility','visible');
+                        $('#back').css('visibility', 'visible');
 
                         let a = 0;
+                       
 
-                        response[0].links.forEach(element => {
+                        if(event.originalEvent.data != null){
                             
+                            response[0].links.forEach(element => {
 
 
-                            if(a==0 || a == response[0].links.length-1)
-                            {   
-                                
-                            }
-                            else{
+
+                            if (a == 0 || a == response[0].links.length - 1) {
+
+                            } else {
 
                                 fetch(`club/${data}?page=${element.label}`);
                             }
 
                             a++;
                         });
+                        }
+                        else{
+                            fetch();
+                        }
 
                     },
 
 
-                });                
+                });
 
             });
 
 
 
-            $('body').on('click','#back',function(){
+            // $('body').on('click', '#back', function() {
 
-                $('#bar').val('');
-                fetch();
+            //     $('#bar').val('');
+            //     fetch();
 
-            })
-
-
-            function fetch(url=null) {
+            // })
 
 
-                if(url == null)
-                {
-                    url = `club/create?page=${page}`; 
+            function fetch(url = null) {
+
+
+                if (url == null) {
+                    url = `club/create?page=${page}`;
                 }
 
                 $('tbody').html("");
@@ -385,26 +467,30 @@
 
                         $('tbody').html("");
 
-                    if (arr.length == 0) {
-                             console.log('yes');
-
-                             $('tbody').append(
-
-                                 `<td colspan=14>Data Not Found</td>`
-
-                             );
-                         } else {
-
-                        $.each(arr, function(key, item) {
-                            // $.each(arr, function(key, item) {
-
-
-                            var srcLogo = `${item.club_logo}`;
-                            var srcBanner = `${item.club_banner}`;
+                        if (arr.length == 0) {
+                            //  console.log('yes');
 
                             $('tbody').append(
-                                `<tr>
-                                    <td>${item.id}</td>
+
+                                `<td colspan=14>Data Not Found</td>`
+
+                            );
+                        } else {
+
+                            $.each(arr, function(key, item) {
+                                // $.each(arr, function(key, item) {
+
+
+                                var srcLogo = `${item.club_logo}`;
+                                var srcBanner = `${item.club_banner}`;
+
+                                $('tbody').append(
+                                    `<tr class='shadow-lg p-3  bg-body rounded m-3'>
+                                    <td class='align-middle' >
+                                        <div class='rounded-circle border border-dark d-flex align-items-center justify-content-center ' style='height:50px;width:50px; background-color:black; color:white'>
+                                            ${item.id}
+                                        </div>
+                                    </td>
                                     <td>${item.group_id}</td>
                                     <td>${item.business_name}</td>
                                     <td>${item.club_number}</td>
@@ -416,67 +502,65 @@
                                     <td>${item.website_link}</td>
                                     <td>
                                     
-                                        <img src=${srcLogo} data-filename='' id="logo${item.id}" style='height:50px; width:50px' class='rounded-5' alt="img not found">
+                                        <img src=${srcLogo} data-filename='' id="logo${item.id}" style='height:50px; width:50px' class='rounded-5 shadow-2-strong' alt="img not found">
                                         </td>
                                     <td>
-                                        <img src=${srcBanner} data-filename='' id="banner${item.id}" style='height:50px; width:100px' class='rounded-4' alt="img not found">    
+                                        <img src=${srcBanner} data-filename='' id="banner${item.id}" style='height:50px; width:100px' class='rounded-4 .shadow-2-strong' alt="img not found">    
                                     </td>
-                                    <td><button  data-id=${item.id} data-action=club/${item.id}   data-type="PUT"  id="editBtn" class="btn btn-warning">Edit</button></td>
-                                    <td><button   data-id=${item.id} id="deleteBtn" class="btn btn-danger ">Delete</button></td>
+                                    <td><button  data-id=${item.id} data-action=club/${item.id}   data-type="PUT"  id="editBtn" class="btn btn-lg btn-warning"><i class="bi bi-pen-fill"></i></button></td>
+                                    <td><button   data-id=${item.id} id="deleteBtn" class="btn btn-lg btn-danger"><i class="bi bi-trash-fill"></i></button></td>
                                 </tr>`
-                            );
-                        });
+                                );
+                            });
 
-                        $('#page-link').empty();
+                            $('#page-link').empty();
 
-                        let a = 0;
-                        $.each(response[0].links, function(key, val) {
+                            let a = 0;
+                            $.each(response[0].links, function(key, val) {
 
-                            if (a == 0) {
+                                if (a == 0) {
 
-                                if(page > 1)
-                                {
-                                    $('#page-link').append(
-                                    
-                                    `  <li class="page-item ">
-                                            <a class="page-link page " data-page=${page-1}  aria-label="Previous">
+                                    if (page > 1) {
+                                        $('#page-link').append(
+
+                                            `  <li class="page-item ">
+                                            <a class="page-link page " data-page=${page-1}  aria-label="Previous" style="color: black">
                                             <span aria-hidden="true">&laquo;</span>
                                             <span class="sr-only">Previous</span>
                                             </a>
                                             </li>`
-                                    );  
-                                }
+                                        );
+                                    }
 
-                            } else if (a == response[0].links.length - 1) {
-                                
-                                if(page < response[0].links.length - 2)
-                                {
+                                } else if (a == response[0].links.length - 1) {
 
-                                    $('#page-link').append(
-                                        `<li class="page-item">
-                                            <a class="page-link page " data-page=${page+1} aria-label="Next">
+                                    if (page < response[0].links.length - 2) {
+
+                                        $('#page-link').append(
+                                            `<li class="page-item">
+                                            <a class="page-link page " data-page=${page+1} aria-label="Next" style="color: black">
                                                 <span aria-hidden="true">&raquo;</span>
                                                 <span class="sr-only">Next</span>
                                                 </a>
                                                 </li>`
-                                            );
+                                        );
                                     }
 
-                            } else {
+                                } else {
 
-                                $('#page-link').append(
+                                    $('#page-link').append(
 
-                                    // `<button class='page' data-page=${a} >${a}</button>`
-                                    `<li class="page-item"><a class="page-link page" data-page=${a} >${a}</a></li>`
-                                );
-                            }
-                            a++;
-                        })
+                                        // `<button class='page' data-page=${a} >${a}</button>`
+                                        `<li class="page-item"><a class="page-link page" data-page=${a} style="color: black" >${a}</a></li>`
+                                    );
+                                }
+                                a++;
+                            })
 
-                    }
-                },
-            });
-        }
+                        }
+                    },
+                });
+            }
 
 
             let type;
@@ -504,18 +588,38 @@
                 $('#submit1').html('Add');
                 $('#exampleModalLabel').html('New Club');
                 $('#submitClub').trigger("reset");
-                // $(`#logo-img`).css('visibility','hidden');
-                // $(`#banner-img`).css('visibility','hidden');
+                $(`#logo-img`).empty();
+                $(`#banner-img`).empty();
 
+                $('#logo').rules('add',{required:true, extension: "png|jpg|jpeg",});
+                $('#banner').rules('add',{required:true,extension: "png|jpg|jpeg",});
 
 
                 url = $(this).data('action');
                 type = $(this).data('type');
+                let id;
                 $.get('/fetch-id', function(response) {
 
-                    console.log($('#id').val(response.id));
+                    id = response.id;
+
+                    console.log($('#id').val(id));
 
                 });
+
+                let logo = $(`#logo${id}`);
+                let banner = $(`#banner${id}`);
+
+
+                $(`#banner-img`).append(
+                    `
+                        <img id=banner-prev  alt='Please Select An Image !'  class='rounded-3 border border-dark border-2' style='height:100px; width:100px'>
+                    `
+                );
+                $(`#logo-img`).css('visibility', 'visible').append(
+                    `
+                        <img id=logo-prev alt='Please Select An Image !'  class='rounded-3 border border-dark border-2' style='height:100px; width:100px'>
+                    `
+                );
 
             });
 
@@ -537,10 +641,10 @@
                         },
 
                         number: {
-                            
-                            required:true,
-                            range:[1,1000000],
-                        
+
+                            required: true,
+                            range: [1, 1000000],
+
                         },
 
                         name: {
@@ -572,14 +676,14 @@
                         },
 
                         logo: {
-                            required: true,
-                            extension: "png|jpe?g",
+                            // required: true,
+                            // extension: "png|jpe?g",
 
                         },
 
                         banner: {
-                            required: true,
-                            extension: "png|jpe?g",
+                            // required: true,
+                            // extension: "png|jpe?g",
 
 
                         },
@@ -602,9 +706,9 @@
                         },
 
                         name: {
-                            type:"The value is not integer",
-                            required:"The value is required",
-                            minvalue:"The value is less than 0",
+                            type: "The value is not integer",
+                            required: "The value is required",
+                            minvalue: "The value is less than 0",
                         },
 
                         state: {
@@ -633,11 +737,11 @@
                         logo: {
                             required: "This field is compulsory",
                             extension: "File must be JPG or PNG",
-                            
+
                         },
                         banner: {
                             required: "This field is compulsory",
-                            extension: "File must be JPG or PNG",     
+                            extension: "File must be JPG or PNG",
                         },
                     },
 
@@ -648,16 +752,22 @@
                         formData = new FormData(form);
 
 
-                        console.log("url : ", url);
+                        // console.log("url : ", url);
 
                         if (type == 'PUT') {
                             text = "Club Edited Successfully";
 
 
+                            $('#logo').rules( 'remove');
+                            $('#banner').rules( 'remove');
+
+
                         } else {
 
                             text = "Club Added Successfully";
-
+                    //         $('#logo').rules('add',{required:true});
+                    // $('#banner').rules('add',{required:true});
+                    
                         }
 
                         $.ajax({
@@ -672,7 +782,7 @@
                             async: false,
                             success: function(response) {
 
-                                console.log(response);
+                                // console.log(response);
 
                                 Swal.fire({
                                     position: "center",
@@ -688,7 +798,7 @@
 
                                 });
 
-                                
+
                                 $('#exampleModal').modal('hide');
 
 
@@ -697,8 +807,10 @@
                                 // document.getElementById(`#banner${response[2]}`).setAttribute('data-filename',response[0]);
                                 // document.getElementById(`#logo${response[2]}`).setAttribute('data-filename',response[1]);
 
-                                $(`#logo${response[2]}`).attr('data-filename',$(`#logo${response[2]}`).attr('src'));
-                                $(`#banner${response[2]}`).attr('data-filename',$(`#banner${response[2]}`).attr('src'));
+                                $(`#logo${response[2]}`).attr('data-filename', $(
+                                    `#logo${response[2]}`).attr('src'));
+                                $(`#banner${response[2]}`).attr('data-filename', $(
+                                    `#banner${response[2]}`).attr('src'));
 
                                 // console.log("filename: ",$(`#banner${response[2]}`).text());
 
@@ -737,12 +849,15 @@
 
                 $('#method').val('PUT');
 
+                $('#logo').rules('add',{required:false,extension: "png|jpg|jpeg",});
+                $('#banner').rules('add',{required:false,extension: "png|jpg|jpeg",});
+
 
                 $.get('club/' + c_id + '/edit', function(data) {
 
                     // console.log($(`#logo${c_id}`).attr('src'));
 
-                    console.log($(`#logo${c_id}`));
+                    // console.log($(`#logo${c_id}`));
 
                     $('#exampleModal').modal('show');
                     $('#id').val(c_id);
@@ -764,29 +879,48 @@
                     // $(`#banner${c_id}`).html($(`#banner${c_id}`).attr('src'));
 
                     // document.getElementById(`#logo${c_id}`).textContent = $(`#logo${c_id}`).attr('src'); 
-                    
+
                 });
 
                 $('.img').empty();
 
+                let logo = $(`#logo${c_id}`);
+                let banner = $(`#banner${c_id}`);
+
+
+
+                $(`#banner-img`).append(
+                    `
+                        <img id=banner-prev src=${banner.attr('src')}   class='rounded-3 border border-dark border-2' style='height:100px; width:100px'>
+                    `
+                );
+                $(`#logo-img`).css('visibility', 'visible').append(
+                    `
+                        <img id=logo-prev src=${logo.attr('src')}  class='rounded-3 border border-dark border-2' style='height:100px; width:100px'>
+                    `
+                );
+
+
+                // console.log(logoPrev);
+
+               
+                // $('#logo').on('change',function(){
+
+                //     let logoPrev = document.getElementById(`logo-prev${c_id}`);
+
+                //     console.log(this.value);
+
+                //     logoPrev.src=this.value;
+
+                // })
+
+
                 
 
-                                    $(`#banner-img`).append(
-                                        `
-                                        Selected Image : ${$(`#logo${c_id}`).attr('src')} </div>
-                                        `
-                                    );
-                                    $(`#logo-img`).css('visibility','visible').append(
-                                        `
-                                        Selected Image : ${$(`#banner${c_id}`).attr('src')} </div>
-                                        `
-                                    );
-
-
-                $(`#logo-img`).css('visibility','visible');
-                $(`#banner-img`).css('visibility','visible');
 
             });
+
+
 
             $('body').on('click', '#deleteBtn', function(event) {
 
